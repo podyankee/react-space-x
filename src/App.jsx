@@ -3,6 +3,7 @@ import React from 'react'
 import Header from './components/Header'
 import Main from './components/Main'
 import Features from './components/Features'
+import Calendar from './components/Calendar'
 import Footer from './components/Footer'
 
 import FetchData from './service/FetchData'
