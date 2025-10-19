@@ -1,7 +1,8 @@
-// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import React from 'react'
 import Header from './components/Header'
 import Main from './components/Main'
+import Home from './components/Home'
 import Features from './components/Features'
 import Calendar from './components/Calendar'
 import Footer from './components/Footer'
@@ -15,10 +16,12 @@ class App extends React.Component {
 		rocket: 'Falcon 1',
 		rocketFeatures: null,
 		rockets: [],
+		company: null,
 	}
 
 	componentDidMount() {
 		this.updateRocket()
+		this.updateCompany()
 	}
 
 	updateRocket() {
@@ -38,16 +41,19 @@ class App extends React.Component {
 		this.setState({ rocket }, this.updateRocket)
 	}
 
-	render() {
-		console.log(this.state)
+	updateCompany = () => {
+		this.fetchData.getCompany().then(company => this.setState({ company }))
+	}
 
+	render() {
 		return (
-			<>
+			<Router>
 				<Header rockets={this.state.rockets} changeRocket={this.changeRocket} />
-				<Main rocket={this.state.rocket} />
-				<Features />
-				<Footer />
-			</>
+				{this.state.company && <Home company={this.state.company} />}
+				{/* <Main rocket={this.state.rocket} /> */}
+				{/* {this.state.rocketFeatures && <Features {...this.state.rocketFeatures} />} */}
+				{this.state.company && <Footer {...this.state.company.links} />}
+			</Router>
 		)
 	}
 }
