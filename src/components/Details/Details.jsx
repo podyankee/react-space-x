@@ -1,35 +1,53 @@
+import { useState, useEffect } from 'react'
 import './Details.scss'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
+import Youtube from 'react-youtube'
+import Main from '../Main'
+import useLaunches from '../useLaunches/useLaunches'
 
 const Details = () => {
-	let navigate = useNavigate()
+	const [launch, setLaunch] = useState(null)
+
+	const { getLaunch, data } = useLaunches()
+	const navigate = useNavigate()
+
+	const { id } = useParams()
+
+	useEffect(() => {
+		if (id) {
+			const currentLaunch = getLaunch(id)
+
+			setLaunch(currentLaunch)
+		}
+	}, [id, getLaunch])
 
 	return (
-		<main className='details'>
-			<div className='container'>
-				<div className='details-row'>
-					<div className='details-image'>
-						<img src='https://images2.imgbox.com/3c/0e/T8iJcSN3_o.png' alt='' />
+		<>
+			<Main rocket={launch?.name} />
+			{launch ? (
+				<main className='details'>
+					<div className='container'>
+						<div className='details-row'>
+							<div className='details-image'>
+								<img
+									src={launch.links?.patch?.small || 'https://via.placeholder.com/400'}
+									alt={launch.name}
+								/>
+							</div>
+							<div className='details-content'>
+								<p className='details-description'>{launch.details || 'Описание отсутствует'}</p>
+							</div>
+						</div>
+						<Youtube className='details.youtube' videoId={launch.links.youtube_id} />
 					</div>
-					<div className='details-content'>
-						<p className='details-description'>Engine failure at 33 seconds and loss of vehicle</p>
-					</div>
-				</div>
-				<div>
-					<iframe
-						className='details-youtube'
-						width='560'
-						height='315'
-						src='https://www.youtube.com/embed/dLQ2tZEH6G0'
-						frameborder='0'
-						allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-						allowfullscreen></iframe>
-				</div>
-			</div>
-			<a onClick={() => navigate(-1)} className='button button-back'>
-				go back
-			</a>
-		</main>
+					<a onClick={() => navigate(-1)} className='button button-back'>
+						go back
+					</a>
+				</main>
+			) : (
+				'...Загрузка данных'
+			)}
+		</>
 	)
 }
 

@@ -1,3 +1,4 @@
+import Main from '../Main'
 import './Features.scss'
 import RelaxWrapper from 'react-rellax-wrapper'
 
@@ -18,6 +19,7 @@ const Features = ({
 }) => {
 	return (
 		<>
+			<Main rocket={name} />
 			<section className='features'>
 				<h2 className='features-title'>
 					{name} <br />
@@ -56,7 +58,7 @@ const Features = ({
 						</thead>
 					</table>
 					<RelaxWrapper speed={14}>
-						<img src={`img/${rocketImages[name]}.png`} alt='rocket' className='rocket' />
+						<img src={`/img/${rocketImages[name]}.png`} alt={name} className='rocket' />
 					</RelaxWrapper>
 					<article>
 						<h3 className='features-subtitle'>DESCRIPTION</h3>

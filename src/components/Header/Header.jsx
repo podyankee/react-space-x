@@ -3,6 +3,8 @@ import { Link, NavLink } from 'react-router-dom'
 import './Header.scss'
 
 const Header = props => (
+	// console.log(props)
+
 	<header className='header'>
 		<Link to='/'>
 			<img src={logo} alt='Logo Space X' className='logo' />
@@ -12,10 +14,8 @@ const Header = props => (
 				{props.rockets.map((item, i) => (
 					<li key={i} className='item'>
 						<Link
-							to='/rocket'
-							onClick={() => {
-								props.changeRocket(item)
-							}}
+							to={`/rocket/${item.replace(' ', '_')}`}
+							onClick={() => props.changeRocket(item)}
 							className='item-link'>
 							{item}
 						</Link>

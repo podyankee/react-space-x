@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Route, Routes, useParams } from 'react-router-dom'
+
 import Header from './components/Header'
-import Main from './components/Main'
 import Home from './components/Home'
 import Features from './components/Features'
 import Calendar from './components/Calendar'
@@ -10,76 +10,57 @@ import Details from './components/Details'
 
 import FetchData from './service/FetchData'
 
-class App extends React.Component {
-	fetchData = new FetchData()
+// Отдельный компонент для страницы ракеты, чтобы использовать useParams
+const RocketPage = ({ fetchData }) => {
+	const { rocket } = useParams()
 
-	state = {
-		rocket: 'Falcon 1',
-		rocketFeatures: null,
-		rockets: [],
-		company: null,
-	}
+	const [rocketFeatures, setRocketFeatures] = useState(null)
 
-	componentDidMount() {
-		this.updateRocket()
-		this.updateCompany()
-	}
+	useEffect(() => {
+		const rocketName = rocket.replace(/_/g, ' ')
+		console.log('rocket param: ', rocket)
+		console.log('rocket features loaded: ', rocketFeatures)
 
-	updateRocket() {
-		this.fetchData
+		fetchData
 			.getRocket()
-			.then(data => {
-				this.setState({ rockets: data.map(item => item.name) })
-				return data
-			})
-			.then(data => data.find(item => item.name === this.state.rocket))
-			.then(rocketFeatures => {
-				this.setState({ rocketFeatures })
-			})
+			.then(data => data.find(item => item.name === rocketName))
+			.then(rocketFeatures => setRocketFeatures(rocketFeatures))
+	}, [rocket, fetchData])
+
+	return rocketFeatures ? <Features {...rocketFeatures} /> : null
+}
+
+const App = () => {
+	const fetchData = new FetchData()
+
+	const [rocket, setRocket] = useState('Falcon 1')
+	const [rockets, setRockets] = useState([])
+	const [company, setCompany] = useState(null)
+
+	// Загружаем список ракет и компанию при старте
+	useEffect(() => {
+		fetchData.getRocket().then(data => {
+			setRockets(data.map(item => item.name))
+		})
+		fetchData.getCompany().then(company => setCompany(company))
+	}, [])
+
+	const changeRocket = rocket => {
+		setRocket(rocket)
 	}
 
-	changeRocket = rocket => {
-		this.setState({ rocket }, this.updateRocket)
-	}
-
-	updateCompany = () => {
-		this.fetchData.getCompany().then(company => this.setState({ company }))
-	}
-
-	render() {
-		return (
-			<Router>
-				<Header rockets={this.state.rockets} changeRocket={this.changeRocket} />
-				<Routes>
-					<Route
-						exact
-						path='/'
-						element={this.state.company && <Home company={this.state.company} />}
-					/>
-					<Route
-						path='/rocket'
-						element=<>
-							{<Main rocket={this.state.rocket} />}
-							{this.state.rocketFeatures && <Features {...this.state.rocketFeatures} />}
-						</>
-					/>
-					<Route
-						path='/calendar'
-						element=<>
-							<Calendar />
-						</>
-					/>
-					<Route
-						path='/details'
-						element=<>
-							<Details />
-						</>
-					/>
-				</Routes>
-				{this.state.company && <Footer {...this.state.company.links} />}
-			</Router>
-		)
-	}
+	return (
+		<Router>
+			<Header rockets={rockets} changeRocket={changeRocket} />
+			<Routes>
+				<Route path='/' element={company && <Home company={company} />} />
+				<Route path='/rocket/:rocket' element={<RocketPage fetchData={fetchData} />} />
+				<Route path='/calendar' element={<Calendar />} />
+				<Route path='/details/:id' element={<Details />} />
+			</Routes>
+			{company && <Footer {...company.links} />}
+		</Router>
+	)
 }
 
 export default App
