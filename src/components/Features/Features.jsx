@@ -1,6 +1,7 @@
 import Main from '../Main'
 import './Features.scss'
-import RelaxWrapper from 'react-rellax-wrapper'
+import { ParallaxProvider } from 'react-scroll-parallax'
+import { Parallax } from 'react-scroll-parallax'
 
 const rocketImages = {
 	'Falcon 1': 'falcon-1',
@@ -18,7 +19,7 @@ const Features = ({
 	description,
 }) => {
 	return (
-		<>
+		<ParallaxProvider>
 			<Main rocket={name} />
 			<section className='features'>
 				<h2 className='features-title'>
@@ -57,16 +58,16 @@ const Features = ({
 							))}
 						</thead>
 					</table>
-					<RelaxWrapper speed={14}>
+					<Parallax speed={70}>
 						<img src={`/img/${rocketImages[name]}.png`} alt={name} className='rocket' />
-					</RelaxWrapper>
+					</Parallax>
 					<article>
 						<h3 className='features-subtitle'>DESCRIPTION</h3>
 						<p className='features-text'>{description}</p>
 					</article>
 				</div>
 			</section>
-		</>
+		</ParallaxProvider>
 	)
 }
 

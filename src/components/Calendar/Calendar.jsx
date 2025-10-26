@@ -6,8 +6,6 @@ import useLaunches from '../useLaunches/useLaunches'
 const Calendar = () => {
 	const { data } = useLaunches()
 
-	// console.log(data)
-
 	return (
 		<>
 			<Main name='Календарь SpaceX' />

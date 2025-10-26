@@ -18,8 +18,6 @@ const RocketPage = ({ fetchData }) => {
 
 	useEffect(() => {
 		const rocketName = rocket.replace(/_/g, ' ')
-		console.log('rocket param: ', rocket)
-		console.log('rocket features loaded: ', rocketFeatures)
 
 		fetchData
 			.getRocket()

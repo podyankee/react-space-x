@@ -38,7 +38,7 @@ const Details = () => {
 								<p className='details-description'>{launch.details || 'Описание отсутствует'}</p>
 							</div>
 						</div>
-						<Youtube className='details.youtube' videoId={launch.links.youtube_id} />
+						<Youtube className='details-youtube' videoId={launch.links.youtube_id} />
 					</div>
 					<a onClick={() => navigate(-1)} className='button button-back'>
 						go back
